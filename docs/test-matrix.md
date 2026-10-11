@@ -1,36 +1,38 @@
 # Test matrix and completion gates
 
-## Results confirmed on branch commit de4bf6df
+## Automated results
 
-GitHub Actions run #37 completed successfully: https://github.com/Loofy147/La9ta/actions/runs/38152425428
+GitHub Actions run #38 completed successfully: https://github.com/Loofy147/La9ta/actions/runs/38152744176
 
-An independent Node.js 22 run of `npm run check && npm test` returned exit code 0. Result: 27 tests, 27 pass, 0 fail.
+Independent Node.js 22 run of `npm run check && npm test`: exit code 0, 27 tests passed, 0 failed.
 
 | Test family | Coverage | Result |
 |---|---|---|
-| Catalog and request domain | Stable IDs, server-resolved catalog data, unknown IDs, item limits, quantities, reference subtotal semantics | PASS |
-| External offers | HTTPS/exact host allowlist, field bounds, reference-only prices | PASS |
-| Order lifecycle | Allowed and forbidden status transitions | PASS |
-| Search normalization | Token normalization, relevance, Teno response field mapping, human-facing source URL, detail URL extraction, no raw API URL fallback, result cap | PASS |
-| Source identity | Ouedkniss URL variants for same announcement normalize to one identity; unrelated IDs remain distinct; API host rejected | PASS |
-| Privacy/security contracts | Private Blob write, ADMIN_TOKEN comparison contract, no-store admin responses, service-worker route exclusions | PASS |
-| Static/runtime parsing | Node syntax checks and JSON manifests | PASS |
+| Catalog/request domain | IDs, item limits, quantities, normalized catalog snapshots, reference subtotal semantics | PASS |
+| External source offers | HTTPS allowlist, exact host restrictions, input bounds, reference-only prices | PASS |
+| Order state machine | permitted/forbidden transitions | PASS |
+| Search domain | query normalization, relevance filter, listing URL extraction, no API URL fallback, result cap | PASS |
+| Source identity | canonical URL identity for an Ouedkniss ad, different IDs remain distinct | PASS |
+| Selected security contracts | private Blob write, server-side admin token comparison, no-store, service worker exclusions | PASS |
+| Static parsing/manifests | JS syntax and JSON validation | PASS |
 
-## Live preview checks
+## Live checks
 
-- Homepage and 8-product catalog available.
-- `/api/health` returned 200 and `storage:available`.
-- `/api/search?q=HOCO%20H29` returned the relevant Ouedkniss listing, not a raw API URL.
-- `/discover.html` loaded.
-- Anonymous `/api/admin-orders` returned 401.
+- Homepage and catalog: available; eight reference products returned.
+- Health: reports storage available.
+- Search: HOCO H29 returns a relevant result and human-facing Ouedkniss listing URL.
+- Admin page: loads; anonymous admin API request returns 401.
+- Valid synthetic order request: HTTP 201; test order ID `DZ-C3A8D87B`.
+- Invalid product ID, quantity zero, populated honeypot: each HTTP 422.
 
-## Required integration checks still OPEN
+One clearly synthetic test record remains in the isolated Preview Blob store; it is not production data.
 
-- Complete valid request intake into private Blob, authenticated order listing, status update and subsequent read.
-- Incorrect-token 401 and correct-token success for administration.
-- Mobile browser regression of the final deduplication logic.
-- Service Worker install/update/cache invalidation on real device.
-- Search provider timeout, malformed payload, empty responses and rate-limit handling in hosted runtime.
-- Production cutover and any migration of legacy customer records.
+## Still open
 
-A feature is experimentally supported only for the exact paths and environment that passed. The code or the green build alone is not proof of full production readiness.
+- Correct-token admin list, valid status transition, illegal transition response 409, reread and status history.
+- Cleanup of the synthetic record through a trusted private maintenance route.
+- Post-dedup mobile browser regression and PWA install/update/cache invalidation.
+- Search provider timeout, malformed response and rate-limit tests.
+- Production cutover and any migration of legacy customer data.
+
+CI is necessary but not sufficient: source presence and a green build do not prove full production readiness.
