@@ -1,0 +1,90 @@
+{
+  "auditDate": "2026-10-11",
+  "project": "La9ta / DZ Pick",
+  "principle": "A claim status does not improve merely because it is repeated; each status requires re-checkable evidence.",
+  "evidence": [
+    {
+      "id": "EV-PROD-001",
+      "status": "FACT",
+      "claim": "The prior public homepage loaded and described requests as a pre-confirmation step.",
+      "source": "https://dz-pick-store.vercel.app/",
+      "limitation": "A content fetch is not a full interactive browser test."
+    },
+    {
+      "id": "EV-PROD-002",
+      "status": "FACT",
+      "claim": "The prior public health endpoint returned ok=true and storage=available.",
+      "source": "https://dz-pick-store.vercel.app/api/health",
+      "limitation": "Does not prove every read/write operation, private access, or data durability."
+    },
+    {
+      "id": "EV-PROD-003",
+      "status": "FACT",
+      "claim": "Search API and discovery page returned 404 on the public alias at audit time.",
+      "source": [
+        "https://dz-pick-store.vercel.app/api/search?q=HOCO%20H29",
+        "https://dz-pick-store.vercel.app/discover.html"
+      ],
+      "limitation": "These paths existed in a separate Vercel deployment tree but were not on the alias observed."
+    },
+    {
+      "id": "EV-PROD-004",
+      "status": "FACT_PARTIAL",
+      "claim": "The prior admin page shell loaded.",
+      "source": "https://dz-pick-store.vercel.app/admin.html",
+      "limitation": "Admin authorization, listing, status update, and privacy behavior were not verified end-to-end."
+    },
+    {
+      "id": "EV-VERCEL-001",
+      "status": "FACT",
+      "claim": "Stable observed deployment and latest listed deployment were different IDs.",
+      "source": [
+        "dpl_13XeojEZRzN6Yk8ZfMNFxgkGiX1Q",
+        "dpl_9NmQgvXgQqbmvfDF7Cxu4M468zcu"
+      ],
+      "limitation": "Alias must be queried again immediately before production changes."
+    },
+    {
+      "id": "EV-REPO-001",
+      "status": "FACT",
+      "claim": "Loofy147/La9ta was empty when source files were first requested; this work created the initial source tree.",
+      "source": "GitHub Contents API response before first README commit",
+      "limitation": "Repository contents evolve with later commits; refer to the current commit tree."
+    },
+    {
+      "id": "EV-SOURCE-001",
+      "status": "FACT",
+      "claim": "The long deployment file response was truncated and must not be treated as complete source.",
+      "source": "Vercel get_deployment_file_contents responses with visibly incomplete long code",
+      "limitation": "Small files may have been complete, but byte-for-byte equivalence was not established."
+    },
+    {
+      "id": "EV-APP-001",
+      "status": "IMPLEMENTED_NOT_YET_RUNTIME_VERIFIED",
+      "claim": "The repository contains a clean implementation of catalog, request intake, private Blob storage, authenticated admin routes, and bounded Teno search.",
+      "source": "Current repository files under src/",
+      "limitation": "Needs CI result and Vercel Preview end-to-end verification before behavior is considered experimentally supported."
+    },
+    {
+      "id": "EV-APP-002",
+      "status": "TESTS_ADDED_NOT_YET_RUN",
+      "claim": "Node tests cover item validation, subtotal semantics, source host validation, allowed status transitions, and selected privacy/cache contracts.",
+      "source": "tests/order-domain.test.cjs and tests/security-contract.test.cjs",
+      "limitation": "Must confirm workflow result; static tests are not a penetration test."
+    },
+    {
+      "id": "EV-INT-001",
+      "status": "UNKNOWN",
+      "claim": "The new repository is connected to the old Vercel project.",
+      "source": null,
+      "limitation": "No such connection has been performed or verified."
+    },
+    {
+      "id": "EV-INT-002",
+      "status": "UNKNOWN",
+      "claim": "The new repository deployment uses the previous production Blob store.",
+      "source": null,
+      "limitation": "No storage link or migration has been configured for the new project."
+    }
+  ]
+}
