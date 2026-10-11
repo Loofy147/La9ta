@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { normaliseText, isRelevant, normalizeSearchResults } = require("../src/lib/search-domain");
+const { normaliseText, isRelevant, extractProductSourceUrl, normalizeSearchResults } = require("../src/lib/search-domain");
 
 test("query normalization handles accents and punctuation", () => {
   assert.equal(normaliseText("HOCO — H29!"), "hoco h29");
@@ -42,23 +42,39 @@ test("normalizes Teno search results to the human-facing source listing", () => 
   assert.equal(item.inStock, true);
 });
 
+test("extracts the actual listing URL from product-detail response", () => {
+  const sourceUrl = extractProductSourceUrl({
+    productId: "p-2",
+    title: { value: "Support Smartphone HOCO H29" },
+    viewUrl: "https://api.teno-store.com/v1/products/p-2",
+    attributes: {
+      sourceUrl: {
+        role: "untrusted_content",
+        value: "https://www.ouedkniss.com/supports-support-smartphone-hoco-h29-d123"
+      }
+    }
+  });
+  assert.equal(sourceUrl, "https://www.ouedkniss.com/supports-support-smartphone-hoco-h29-d123");
+});
+
 test("does not expose raw API URLs as listing links", () => {
   const [item] = normalizeSearchResults({
     data: [{
-      productId: "p-2",
+      productId: "p-3",
       title: { value: "Support Smartphone Auto HOCO H29" },
       priceMinor: "90000",
-      viewUrl: "https://api.teno-store.com/v1/products/p-2"
+      viewUrl: "https://api.teno-store.com/v1/products/p-3"
     }]
   }, "HOCO H29");
   assert.equal(item.sourceUrl, "");
   assert.equal(item.sourceName, "مصدر غير محدد");
+  assert.equal(extractProductSourceUrl({ viewUrl: "https://api.teno-store.com/v1/products/p-3" }), "");
 });
 
 test("uses a valid Teno snapshot URL only when original listing URL is absent", () => {
   const [item] = normalizeSearchResults({
     data: [{
-      productId: "p-3",
+      productId: "p-4",
       title: { value: "Support Smartphone Auto HOCO H29" },
       priceMinor: "90000",
       snapshotUrl: "https://teno-store.com/s/shareable-snapshot"
