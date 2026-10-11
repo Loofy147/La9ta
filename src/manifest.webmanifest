@@ -1,0 +1,14 @@
+{
+  "name": "لقطة DZ — نلقى لك",
+  "short_name": "لقطة DZ",
+  "description": "اكتشاف عروض السوق وتجميع طلبات التوفير بعد التحقق.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f2ec",
+  "theme_color": "#191816",
+  "lang": "ar-DZ",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
