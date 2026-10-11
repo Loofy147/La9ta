@@ -1,0 +1,2 @@
+change_id,date,problem_or_gap,files_or_scope,downstream_effect,verification,evidence,status,rollback
+CHG-0001,2026-10-11,"Repository was empty and deployment source retrieval truncated long files","README.md; src/catalog.json; src/lib/order-domain.js; src/api; UI; tests; docs","New repository becomes candidate source of truth; old deployment is unchanged","CI and Preview checks still required","GitHub commits in Loofy147/La9ta; see evidence-register.json","IMPLEMENTED_NOT_RUNTIME_VERIFIED","Revert affected commit(s); do not change existing production alias"
