@@ -46,7 +46,9 @@ test("external offers preserve observed values but are excluded from authoritati
 
 test("external source URLs must use HTTPS and an approved host family", () => {
   assert.equal(sourceUrlIsAllowed("https://www.ouedkniss.com.dz/item"), true);
-  assert.equal(sourceUrlIsAllowed("https://shop.teno-store.com/item"), true);
+  assert.equal(sourceUrlIsAllowed("https://www.ouedkniss.com/item"), true);
+  assert.equal(sourceUrlIsAllowed("https://www.teno-store.com/s/snapshot-id"), true);
+  assert.equal(sourceUrlIsAllowed("https://api.teno-store.com/v1/products/123"), false);
   assert.equal(sourceUrlIsAllowed("http://www.teno-store.com/item"), false);
   assert.equal(sourceUrlIsAllowed("https://example.org/item"), false);
   assert.equal(sourceUrlIsAllowed("https://user:pass@www.teno-store.com/item"), false);
