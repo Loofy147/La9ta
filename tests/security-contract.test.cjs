@@ -51,3 +51,15 @@ test("environment secrets are not committed into source configuration", () => {
   const packageSource = read("src/package.json");
   assert.doesNotMatch(packageSource, /BLOB_READ_WRITE_TOKEN|ADMIN_TOKEN/);
 });
+
+test("catalog and search carts share source identity for duplicate listings", () => {
+  const app = read("src/app.js");
+  const discover = read("src/discover.js");
+  const index = read("src/index.html");
+  const discoveryPage = read("src/discover.html");
+  assert.match(app, /La9taSourceUtils\.sourceIdentity/);
+  assert.match(discover, /La9taSourceUtils\.sourceIdentity/);
+  assert.match(index, /source-utils\.js/);
+  assert.match(discoveryPage, /source-utils\.js/);
+  assert.match(read("src/sw.js"), /source-utils\.js/);
+});
