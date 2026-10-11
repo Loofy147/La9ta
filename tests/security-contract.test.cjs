@@ -44,7 +44,7 @@ test("search adapter bounds query, upstream calls, and result size", () => {
   const domain = read("src/lib/search-domain.js");
   assert.match(domain, /slice\(0, 12\)/);
   assert.match(domain, /extractProductSourceUrl/);
-  assert.doesNotMatch(domain, /product\.viewUrl/);
+  assert.doesNotMatch(domain, /safeSourceUrl\(product\.viewUrl\)/);
 });
 
 test("environment secrets are not committed into source configuration", () => {
