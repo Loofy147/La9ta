@@ -1,0 +1,10 @@
+{
+  "name": "la9ta",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Source-controlled Algerian product discovery and request-to-source-confirmation storefront",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "check": "node --check src/app.js && node --check src/discover.js && node --check src/admin.js && node --check src/lib/order-domain.js && node --check src/api/order.js && node --check src/api/health.js && node --check src/api/admin-orders.js && node --check src/api/admin-update.js && node --check src/api/search.js"
+  }
+}
