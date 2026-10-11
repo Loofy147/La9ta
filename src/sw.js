@@ -1,5 +1,5 @@
-const CACHE = "la9ta-static-v1";
-const ASSETS = ["/", "/styles.css", "/app.js", "/catalog.json", "/manifest.webmanifest", "/icon.svg"];
+const CACHE = "la9ta-static-v2";
+const ASSETS = ["/", "/styles.css", "/app.js", "/source-utils.js", "/catalog.json", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
