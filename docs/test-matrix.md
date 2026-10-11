@@ -1,38 +1,35 @@
 # Test matrix and completion gates
 
-## Automated results
+## Automated test result
 
-GitHub Actions run #38 completed successfully: https://github.com/Loofy147/La9ta/actions/runs/38152744176
+GitHub Actions run #39 completed successfully: https://github.com/Loofy147/La9ta/actions/runs/38153111017
 
-Independent Node.js 22 run of `npm run check && npm test`: exit code 0, 27 tests passed, 0 failed.
+Independent Node.js 22 run of `npm run check && npm test`: exit code 0, 27 passed, 0 failed.
 
-| Test family | Coverage | Result |
-|---|---|---|
-| Catalog/request domain | IDs, item limits, quantities, normalized catalog snapshots, reference subtotal semantics | PASS |
-| External source offers | HTTPS allowlist, exact host restrictions, input bounds, reference-only prices | PASS |
-| Order state machine | permitted/forbidden transitions | PASS |
-| Search domain | query normalization, relevance filter, listing URL extraction, no API URL fallback, result cap | PASS |
-| Source identity | canonical URL identity for an Ouedkniss ad, different IDs remain distinct | PASS |
-| Selected security contracts | private Blob write, server-side admin token comparison, no-store, service worker exclusions | PASS |
-| Static parsing/manifests | JS syntax and JSON validation | PASS |
+- Catalog/order rules, quantities, ID validation, external offer URL allowlisting and reference-price handling: PASS.
+- Search normalization, relevance, listing-link extraction and raw API URL exclusion: PASS.
+- Ouedkniss source-identity deduplication and static cart contracts: PASS.
+- Admin server-side token comparison and no-store contracts: PASS as static/code tests.
+- Service Worker route exclusions and JavaScript/JSON syntax: PASS.
 
-## Live checks
+## Live results
 
-- Homepage and catalog: available; eight reference products returned.
-- Health: reports storage available.
-- Search: HOCO H29 returns a relevant result and human-facing Ouedkniss listing URL.
-- Admin page: loads; anonymous admin API request returns 401.
-- Valid synthetic order request: HTTP 201; test order ID `DZ-C3A8D87B`.
-- Invalid product ID, quantity zero, populated honeypot: each HTTP 422.
+- Main production of the new La9ta project: https://la9ta.vercel.app/
+- `/catalog.json`: eight items.
+- `/api/health`: reports storage available.
+- `/api/search?q=HOCO%20H29`: relevant item with human-facing Ouedkniss listing link.
+- Anonymous `/api/admin-orders`: 401.
+- Valid synthetic order: 201, `DZ-C3A8D87B`.
+- Unknown ID, zero quantity, populated honeypot: 422 each.
+- Old `dz-pick-store.vercel.app/api/health`: still reports storage available, indicating the old project was not cut over.
 
-One clearly synthetic test record remains in the isolated Preview Blob store; it is not production data.
+## Open integration gates
 
-## Still open
+- Correct-token administration, read/transition/update/re-read of a persisted QA order.
+- Cleanup of `DZ-C3A8D87B` from the new project's separate Blob store.
+- Interactive regression for dedup after final UI fix.
+- PWA install/update/cache invalidation on device.
+- Search timeout, malformed provider response and rate-limit behavior.
+- Any future cutover/migration from the old project.
 
-- Correct-token admin list, valid status transition, illegal transition response 409, reread and status history.
-- Cleanup of the synthetic record through a trusted private maintenance route.
-- Post-dedup mobile browser regression and PWA install/update/cache invalidation.
-- Search provider timeout, malformed response and rate-limit tests.
-- Production cutover and any migration of legacy customer data.
-
-CI is necessary but not sufficient: source presence and a green build do not prove full production readiness.
+A green CI or READY deployment is not by itself proof of full production readiness.

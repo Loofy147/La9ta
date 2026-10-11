@@ -1,202 +1,148 @@
 {
   "auditDate": "2026-10-11",
   "repository": "Loofy147/La9ta",
+  "mergedCommit": "db1f770a05007eae2fb40425266ff0100108c0bd",
+  "mainDeployment": {
+    "id": "dpl_5f7RMptU2njN669fr9L6DUx5xk53",
+    "state": "READY",
+    "target": "production",
+    "url": "https://la9ta.vercel.app/"
+  },
   "oldProductionUrl": "https://dz-pick-store.vercel.app/",
-  "branch": "verification/acceptance-baseline-20261011",
-  "applicationCommitTested": "de4bf6df1e42d72e3f0e2d727efd3ccbcd69d8a1",
-  "documentationCommit": "a9dfe0385d72d45b94facc4b35c0673090033ec3",
   "principles": [
     "Conversation-only is not implementation evidence.",
-    "A successful deployment is not proof of user-visible behavior.",
+    "A successful deployment is not proof of every user-visible path.",
     "A claim status does not improve merely because it is repeated.",
     "Each important claim retains scope, uncertainty, source and a revalidation path."
   ],
   "evidence": [
     {
-      "id": "EV-LEGACY-001",
+      "id": "EV-GIT-001",
       "status": "FACT",
-      "claim": "The old public homepage loaded and explained that a request is pre-confirmation.",
-      "source": "https://dz-pick-store.vercel.app/",
-      "limitation": "Content fetch only; not a complete browser test."
-    },
-    {
-      "id": "EV-LEGACY-002",
-      "status": "FACT",
-      "claim": "The old health endpoint reported ok=true and storage=available in the previous audit.",
-      "source": "https://dz-pick-store.vercel.app/api/health",
-      "limitation": "Not proof of every write/read operation."
-    },
-    {
-      "id": "EV-LEGACY-003",
-      "status": "FACT",
-      "claim": "Search API and discovery page returned 404 on the old alias after rollback.",
-      "source": [
-        "https://dz-pick-store.vercel.app/api/search?q=HOCO%20H29",
-        "https://dz-pick-store.vercel.app/discover.html"
-      ],
-      "limitation": "Historical observation; re-check before any future production mutation."
-    },
-    {
-      "id": "EV-VERCEL-001",
-      "status": "FACT",
-      "claim": "The previous stable deployment and latest listed deployment had different IDs.",
-      "source": [
-        "dpl_13XeojEZRzN6Yk8ZfMNFxgkGiX1Q",
-        "dpl_9NmQgvXgQqbmvfDF7Cxu4M468zcu"
-      ],
-      "limitation": "Alias mapping must be checked before promotion."
-    },
-    {
-      "id": "EV-REPO-001",
-      "status": "FACT",
-      "claim": "Loofy147/La9ta was empty on initial inspection; source code, tests and docs were added under Git.",
-      "source": "https://github.com/Loofy147/La9ta",
-      "limitation": "Use current branch/commit for current contents."
-    },
-    {
-      "id": "EV-SOURCE-001",
-      "status": "FACT",
-      "claim": "Long Vercel source responses were visibly truncated and were not treated as canonical source.",
-      "source": "Prior Vercel deployment file-content inspection",
-      "limitation": "This is a clean reconstruction, not a byte-for-byte recovery."
+      "claim": "PR #1 was merged into main by squash commit db1f770a05007eae2fb40425266ff0100108c0bd.",
+      "source": "https://github.com/Loofy147/La9ta/commit/db1f770a05007eae2fb40425266ff0108c0bd"
     },
     {
       "id": "EV-CI-001",
       "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "GitHub Actions La9ta CI run #38 completed successfully.",
-      "source": "https://github.com/Loofy147/La9ta/actions/runs/38152744176",
-      "commit": "a9dfe0385d72d45b94facc4b35c0673090033ec3",
+      "claim": "GitHub Actions run #39 completed successfully; JS syntax checks, domain/security contract tests, and JSON validation passed.",
+      "source": "https://github.com/Loofy147/La9ta/actions/runs/38153111017",
+      "testedCommit": "f87685cc1262b917b4ceb036b7b2278593225bf3",
       "result": {
         "tests": 27,
         "passed": 27,
-        "failed": 0,
-        "syntaxCheck": "pass",
-        "jsonValidation": "pass"
+        "failed": 0
       },
-      "limitation": "The documentation-only commit does not materially change app source; tests are domain/contracts, not a penetration test."
+      "limitation": "Run was on the PR head before squash merge; app tree is the same as merged source. Tests are not a penetration test."
     },
     {
       "id": "EV-CI-002",
       "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "Independent Node.js 22 run of npm run check && npm test exited 0 with all 27 tests passing.",
+      "claim": "Independent Node.js 22 run of npm run check && npm test exited 0 with 27 tests passing.",
       "source": "Vercel sandbox session la9ta-validation-20261011",
-      "commit": "de4bf6df1e42d72e3f0e2d727efd3ccbcd69d8a1",
-      "limitation": "No browser integration or persisted admin read/update in this run."
+      "testedCommit": "de4bf6df1e42d72e3f0e2d727efd3ccbcd69d8a1",
+      "limitation": "Domain/runtime contract tests are not a full order lifecycle."
     },
     {
-      "id": "EV-PREVIEW-001",
+      "id": "EV-MAIN-001",
       "status": "FACT",
-      "claim": "A separate Vercel project la9ta is linked to Loofy147/La9ta with root directory src.",
+      "claim": "La9ta main deployment is READY at la9ta.vercel.app on an independent Vercel project.",
       "source": "Vercel project prj_cFiJcOwiK8R62DWNiZfJWCNsM7At",
-      "limitation": "Separate from old project dz-pick-store."
+      "deployment": "dpl_5f7RMptU2njN669fr9L6DUx5xk53",
+      "commit": "db1f770a05007eae2fb40425266ff0100108c0bd",
+      "aliases": [
+        "la9ta.vercel.app",
+        "la9ta-djangos-projects-996fd933.vercel.app",
+        "la9ta-git-main-djangos-projects-996fd933.vercel.app"
+      ]
     },
     {
-      "id": "EV-PREVIEW-002",
+      "id": "EV-MAIN-002",
       "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "The documentation-updated branch deployment is READY and uses the recorded commit.",
-      "source": "https://la9ta-kmp1ey9rp-djangos-projects-996fd933.vercel.app/",
-      "deployment": "dpl_fj29mcFVbeKy2e6LLKTR6eZX1Wf6",
-      "commit": "a9dfe0385d72d45b94facc4b35c0673090033ec3",
-      "limitation": "READY only establishes platform deployment state."
+      "claim": "La9ta main live homepage and catalog loaded; health returned ok=true and storage=available; search for HOCO H29 returned the human-facing Ouedkniss source URL; anonymous admin listing returned 401.",
+      "source": [
+        "https://la9ta.vercel.app/",
+        "https://la9ta.vercel.app/catalog.json",
+        "https://la9ta.vercel.app/api/health",
+        "https://la9ta.vercel.app/api/search?q=HOCO%20H29",
+        "https://la9ta.vercel.app/api/admin-orders"
+      ],
+      "deployment": "dpl_5f7RMptU2njN669fr9L6DUx5xk53",
+      "limitation": "No positive admin authentication was tested."
     },
     {
-      "id": "EV-PREVIEW-003",
-      "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "GET /api/health reported ok=true and storage=available in the isolated project.",
-      "source": "https://la9ta-kmp1ey9rp-djangos-projects-996fd933.vercel.app/api/health",
-      "deployment": "dpl_fj29mcFVbeKy2e6LLKTR6eZX1Wf6",
-      "limitation": "Health/list probe does not independently prove order retrieval."
+      "id": "EV-LEGACY-001",
+      "status": "FACT",
+      "claim": "The old alias still resolves to the prior dz-pick-store deployment dpl_13XeojEZRzN6Yk8ZfMNFxgkGiX1Q.",
+      "source": "Vercel get_deployment for dz-pick-store.vercel.app",
+      "limitation": "A current health fetch also succeeded; legacy order migration/cutover was not performed."
     },
     {
-      "id": "EV-PREVIEW-004",
-      "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "HOCO H29 search returned a relevant result with a human-facing Ouedkniss URL ending in d56373493 and observed price 900 DZD.",
-      "source": "https://la9ta-kmp1ey9rp-djangos-projects-996fd933.vercel.app/api/search?q=HOCO%20H29",
-      "deployment": "dpl_fj29mcFVbeKy2e6LLKTR6eZX1Wf6",
-      "limitation": "Price/stock still need revalidation before customer commitment."
+      "id": "EV-LEGACY-002",
+      "status": "FACT",
+      "claim": "The old health endpoint still returns ok=true, storage=available, countHint=1.",
+      "source": "https://dz-pick-store.vercel.app/api/health"
     },
     {
-      "id": "EV-PREVIEW-005",
-      "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "GET /api/admin-orders without x-admin-token returned HTTP 401.",
-      "source": "https://la9ta-kmp1ey9rp-djangos-projects-996fd933.vercel.app/api/admin-orders",
-      "deployment": "dpl_fj29mcFVbeKy2e6LLKTR6eZX1Wf6",
-      "limitation": "Correct-token path and updates remain unverified."
-    },
-    {
-      "id": "EV-ORD-002",
-      "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "A valid synthetic POST /api/order returned HTTP 201 with order number DZ-C3A8D87B and priceStatus needs_revalidation.",
+      "id": "EV-ORD-001",
+      "status": "EXPERIMENTALLY_SUPPORTED_WITH_SCOPE_LIMITS",
+      "claim": "A valid synthetic POST /api/order returned 201 and order ID DZ-C3A8D87B; unknown ID, zero quantity and a filled honeypot each returned 422.",
       "source": "https://la9ta-kmp1ey9rp-djangos-projects-996fd933.vercel.app/api/order",
       "deployment": "dpl_fj29mcFVbeKy2e6LLKTR6eZX1Wf6",
-      "testData": "QA Synthetic; phone 0000000000; wilaya TEST-QA; catalog id 1 quantity 1",
-      "limitation": "The record was written through the handler but has not been independently re-read from the authenticated admin API."
-    },
-    {
-      "id": "EV-ORD-003",
-      "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "Unknown catalog ID, quantity zero, and a populated honeypot each returned HTTP 422.",
-      "source": "POST /api/order on the isolated preview",
-      "deployment": "dpl_fj29mcFVbeKy2e6LLKTR6eZX1Wf6",
       "result": {
+        "create": 201,
         "unknownId": 422,
         "zeroQuantity": 422,
         "honeypot": 422
       },
-      "limitation": "Additional negative cases (bad phone, oversized payload, unsupported method) can be expanded."
+      "limitation": "Order has not been independently reread or updated through admin; synthetic record remains in the new project's Blob store."
     },
     {
-      "id": "EV-ORD-004",
+      "id": "EV-ORD-002",
       "status": "FACT",
-      "claim": "Synthetic QA order DZ-C3A8D87B remains in the isolated preview Blob store and is not a real customer order.",
-      "source": "Successful synthetic request response",
-      "limitation": "Do not migrate it to production. Remove it using a trusted private maintenance path when available."
+      "claim": "QA order DZ-C3A8D87B uses only synthetic marker fields and remains in the separate La9ta Blob store, not in the legacy store.",
+      "source": "Successful HTTP 201 response",
+      "store": "store_rAO0bQFXBAZFzJd9",
+      "limitation": "Record not yet removed; remove only via trusted private maintenance path."
     },
     {
-      "id": "EV-BROWSER-001",
-      "status": "EXPERIMENTALLY_SUPPORTED_WITH_SCOPE_LIMITS",
-      "claim": "An earlier browser run verified the catalog grid, catalog add, relevant HOCO H29 search, adding the discovery offer, and navigation to the request section.",
-      "source": "Earlier La9ta preview URL",
-      "limitation": "It predates the final dedup fix; no customer data entered and no order form submitted in that browser run."
+      "id": "EV-SEARCH-001",
+      "status": "EXPERIMENTALLY_SUPPORTED",
+      "claim": "HOCO H29 search returned a relevant result, observed price 900 DZD and a human-facing Ouedkniss URL ending in d56373493 on the merged main domain.",
+      "source": "https://la9ta.vercel.app/api/search?q=HOCO%20H29",
+      "deployment": "dpl_5f7RMptU2njN669fr9L6DUx5xk53",
+      "limitation": "Price and stock need source revalidation before any customer commitment; only this query has current main deployment evidence."
+    },
+    {
+      "id": "EV-ADMIN-001",
+      "status": "EXPERIMENTALLY_SUPPORTED",
+      "claim": "Anonymous GET /api/admin-orders on La9ta main returns HTTP 401.",
+      "source": "https://la9ta.vercel.app/api/admin-orders",
+      "limitation": "Correct token, read, update and illegal-transition 409 remain open."
     },
     {
       "id": "EV-CART-001",
-      "status": "EXPERIMENTALLY_SUPPORTED",
-      "claim": "Unit tests and static tests verify Ouedkniss URL variants normalize to a shared identity and both cart entry paths use the shared utility.",
+      "status": "EXPERIMENTALLY_SUPPORTED_WITH_SCOPE_LIMITS",
+      "claim": "Unit tests and static contracts cover canonical Ouedkniss URL identity and shared cart dedup behavior.",
       "source": [
         "tests/source-identity.test.cjs",
         "tests/security-contract.test.cjs"
       ],
-      "limitation": "Post-fix interactive cart regression remains open."
+      "limitation": "Interactive browser regression after the final dedup change remains open."
     },
     {
-      "id": "EV-ORD-001",
+      "id": "EV-PWA-001",
       "status": "UNKNOWN",
-      "claim": "An order can be read through authenticated admin API, updated through a legal state transition and reread with status history.",
+      "claim": "Install/update/cache invalidation behaves correctly on a real mobile device.",
       "source": null,
-      "limitation": "Positive admin token path has not been tested; only missing-token 401 is established."
-    },
-    {
-      "id": "EV-INT-001",
-      "status": "FACT",
-      "claim": "La9ta is connected to a separate Vercel project; the old project/domain alias was not reassigned.",
-      "source": "Vercel project and deployment checks",
-      "projectId": "prj_cFiJcOwiK8R62DWNiZfJWCNsM7At",
-      "limitation": "No production cutover or legacy order migration."
-    },
-    {
-      "id": "EV-INT-002",
-      "status": "FACT_PARTIAL",
-      "claim": "A separate private Blob store is linked to the new project and its health endpoint reports storage available.",
-      "source": "Vercel store store_rAO0bQFXBAZFzJd9 and live health response",
-      "limitation": "Authenticated read/update and cleanup paths are not verified."
+      "limitation": "Static source contracts pass; no device acceptance test was run."
     },
     {
       "id": "EV-FUL-001",
       "status": "UNKNOWN",
-      "claim": "Payment and courier integrations are operational.",
+      "claim": "Payment gateway and courier integrations are operational.",
       "source": null,
-      "limitation": "No evidence of payment gateway or shipping API integration."
+      "limitation": "No such integrations verified."
     }
   ]
 }
