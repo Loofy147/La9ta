@@ -5,6 +5,6 @@
   "description": "Source-controlled Algerian product discovery and request-to-source-confirmation storefront",
   "scripts": {
     "test": "node --test tests/*.test.cjs",
-    "check": "node --check src/app.js && node --check src/discover.js && node --check src/admin.js && node --check src/lib/order-domain.js && node --check src/lib/search-domain.js && node --check src/api/order.js && node --check src/api/health.js && node --check src/api/admin-orders.js && node --check src/api/admin-update.js && node --check src/api/search.js"
+    "check": "node --check src/app.js && node --check src/discover.js && node --check src/source-utils.js && node --check src/admin.js && node --check src/lib/order-domain.js && node --check src/lib/search-domain.js && node --check src/api/order.js && node --check src/api/health.js && node --check src/api/admin-orders.js && node --check src/api/admin-update.js && node --check src/api/search.js"
   }
 }
