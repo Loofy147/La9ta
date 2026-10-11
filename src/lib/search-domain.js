@@ -26,6 +26,16 @@ function safeSourceUrl(value) {
   try { return new URL(value).toString(); } catch { return ""; }
 }
 
+function extractProductSourceUrl(product) {
+  if (!product || typeof product !== "object") return "";
+  const attributes = product.attributes && typeof product.attributes === "object" ? product.attributes : {};
+  const sourceField = attributes.sourceUrl;
+  const sourceValue = sourceField && typeof sourceField === "object" ? sourceField.value : sourceField;
+  // A shareable marketplace snapshot is an acceptable fallback. Never use
+  // product.viewUrl, because this field may point to the JSON API endpoint.
+  return safeSourceUrl(sourceValue) || safeSourceUrl(product.snapshotUrl) || "";
+}
+
 function sourceNameFor(url) {
   if (!url) return "مصدر غير محدد";
   const hostname = new URL(url).hostname.toLowerCase();
@@ -49,12 +59,7 @@ function normalizeSearchResults(payload, query) {
       const rawPrice = product.priceFromMinor ?? product.priceMinor ??
         (variants[0] ? variants[0].priceMinor : null);
       const numericPrice = rawPrice === null || rawPrice === undefined ? null : Number(rawPrice) / 100;
-      const attributes = product.attributes && typeof product.attributes === "object" ? product.attributes : {};
-      const sourceUrlField = attributes.sourceUrl;
-      const sourceValue = sourceUrlField && typeof sourceUrlField === "object"
-        ? sourceUrlField.value : sourceUrlField;
-      // Never fall back to viewUrl: it may be a raw API JSON endpoint.
-      const sourceUrl = safeSourceUrl(sourceValue) || safeSourceUrl(product.snapshotUrl) || "";
+      const sourceUrl = extractProductSourceUrl(product);
       const title = String(rawTitle || "منتج بدون عنوان").trim().slice(0, 220);
       if (title.length < 2) return null;
       return {
@@ -71,4 +76,4 @@ function normalizeSearchResults(payload, query) {
     .filter(Boolean);
 }
 
-module.exports = { normaliseText, isRelevant, safeSourceUrl, sourceNameFor, normalizeSearchResults };
+module.exports = { normaliseText, isRelevant, safeSourceUrl, extractProductSourceUrl, sourceNameFor, normalizeSearchResults };
