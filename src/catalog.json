@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "HOCO H29 — حامل مغناطيسي للسيارة",
+    "category": "إكسسوارات الهاتف والسيارة",
+    "priceDzd": 900,
+    "sourceName": "Smart Tech Algérie",
+    "sourceUrl": "https://www.ouedkniss.com.dz/store/12078/smart-tech-algerie/annonce/56373493",
+    "priceStatus": "needs_revalidation"
+  },
+  {
+    "id": 2,
+    "name": "PLOKAMA U20 — Mini Ring Light",
+    "category": "التصوير والإضاءة",
+    "priceDzd": 1200,
+    "sourceName": "Smart Tech Algérie",
+    "sourceUrl": "https://www.ouedkniss.com.dz/store/12078/smart-tech-algerie/annonce/57365256",
+    "priceStatus": "needs_revalidation"
+  },
+  {
+    "id": 3,
+    "name": "HOCO K28 — Mini LED Clip",
+    "category": "التصوير والإضاءة",
+    "priceDzd": 1900,
+    "sourceName": "Smart Tech Algérie",
+    "sourceUrl": "https://www.ouedkniss.com.dz/store/12078/smart-tech-algerie/annonce/55160758",
+    "priceStatus": "needs_revalidation"
+  },
+  {
+    "id": 4,
+    "name": "YESIDO C70 — حامل هاتف/Tablet",
+    "category": "إكسسوارات الهاتف",
+    "priceDzd": 2400,
+    "sourceName": "IT DEVICE",
+    "sourceUrl": "https://www.ouedkniss.com.dz/store/17937/it-device/annonce/54346493",
+    "priceStatus": "needs_revalidation"
+  },
+  {
+    "id": 5,
+    "name": "Goji G7 — دعم مغناطيسي 360°",
+    "category": "إكسسوارات الهاتف والسيارة",
+    "priceDzd": 2500,
+    "sourceName": "Sela3li",
+    "sourceUrl": "https://www.ouedkniss.com.dz/store/20734/sela3li/annonce/56511311",
+    "priceStatus": "needs_revalidation"
+  },
+  {
+    "id": 6,
+    "name": "K007 — حامل سيارة بقاعدة Ventouse",
+    "category": "إكسسوارات السيارة",
+    "priceDzd": 650,
+    "sourceName": "Sela3li",
+    "sourceUrl": "https://www.ouedkniss.com.dz/store/20734/sela3li/annonce/56809451",
+    "priceStatus": "needs_revalidation"
+  },
+  {
+    "id": 7,
+    "name": "SilverCrest — Mixeur 2×1",
+    "category": "المنزل والمطبخ",
+    "priceDzd": 7200,
+    "sourceName": "DariTek",
+    "sourceUrl": "https://www.ouedkniss.com.dz/mixeurs-bras-mixeur-avec-mini-blender-2-en-1-silvercrest-600w-vitesses-verre-doseur-06l-bachdjerrah-alger-algerie-d50511910",
+    "priceStatus": "needs_revalidation"
+  },
+  {
+    "id": 8,
+    "name": "Anker Eufy G50 Hybrid — Robot Vacuum",
+    "category": "المنزل والتنظيف",
+    "priceDzd": 34000,
+    "sourceName": "Sela3li",
+    "sourceUrl": "https://www.ouedkniss.com.dz/store/20734/sela3li/annonce/52973021",
+    "priceStatus": "needs_revalidation"
+  }
+]
