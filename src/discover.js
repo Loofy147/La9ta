@@ -31,6 +31,22 @@
     return identity ? "source:" + identity : "catalog:" + String(entry && entry.id);
   }
 
+  function dedupeCart(items) {
+    const merged = [];
+    const byKey = new Map();
+    for (const entry of items) {
+      const key = cartKey(entry);
+      const existing = byKey.get(key);
+      if (existing) {
+        existing.quantity = Math.min(20, Number(existing.quantity || 1) + Number(entry.quantity || 1));
+      } else {
+        byKey.set(key, entry);
+        merged.push(entry);
+      }
+    }
+    return merged;
+  }
+
   async function addOffer(item) {
     if (!item.sourceUrl || !["Teno Store", "Ouedkniss"].includes(item.sourceName)) {
       message.textContent = "لا يوجد رابط مصدر صالح لإضافة هذا العرض.";
@@ -41,7 +57,7 @@
     let cart = [];
     try {
       const old = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-      cart = Array.isArray(old) ? old : [];
+      cart = dedupeCart(Array.isArray(old) ? old : []);
     } catch { cart = []; }
     const offer = {
       externalOffer: {
