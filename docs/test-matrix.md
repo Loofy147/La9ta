@@ -1,35 +1,36 @@
 # Test matrix and completion gates
 
-## Automated local/CI checks
+## Results confirmed on branch commit de4bf6df
 
-| Test | Protects | Current implementation |
+GitHub Actions run #37 completed successfully: https://github.com/Loofy147/La9ta/actions/runs/38152425428
+
+An independent Node.js 22 run of `npm run check && npm test` returned exit code 0. Result: 27 tests, 27 pass, 0 fail.
+
+| Test family | Coverage | Result |
 |---|---|---|
-| Catalog IDs are unique and price values numeric | Order/catalog consistency | Added |
-| Valid catalog order normalized from server catalog | Client cannot choose authoritative catalog price | Added |
-| Unknown IDs rejected | Catalog boundary | Added |
-| Empty or excessive order items rejected | Resource and payload bounds | Added |
-| Quantities must be integer 1-20 | Quantity validation | Added |
-| External source URL is HTTPS and approved host family | Prevent malformed/untrusted source links | Added |
-| External source values are stored as reference-only | Prevent client price becoming a bill | Added |
-| State transition matrix | Prevent illegal order lifecycle jumps | Added |
-| Admin functions reference server-side ADMIN_TOKEN and timing-safe comparison | Admin authorization contract | Added static checks |
-| Service worker excludes API and internal routes | Avoid caching private responses | Added static checks |
-| Search query/result/timeout bounds | Bound upstream dependency | Added static checks |
-| JavaScript syntax checks | Catch parse errors | Added |
+| Catalog and request domain | Stable IDs, server-resolved catalog data, unknown IDs, item limits, quantities, reference subtotal semantics | PASS |
+| External offers | HTTPS/exact host allowlist, field bounds, reference-only prices | PASS |
+| Order lifecycle | Allowed and forbidden status transitions | PASS |
+| Search normalization | Token normalization, relevance, Teno response field mapping, human-facing source URL, detail URL extraction, no raw API URL fallback, result cap | PASS |
+| Source identity | Ouedkniss URL variants for same announcement normalize to one identity; unrelated IDs remain distinct; API host rejected | PASS |
+| Privacy/security contracts | Private Blob write, ADMIN_TOKEN comparison contract, no-store admin responses, service-worker route exclusions | PASS |
+| Static/runtime parsing | Node syntax checks and JSON manifests | PASS |
 
-The tests are committed; their CI result must be queried. Do not mark these as passing merely because the files exist.
+## Live preview checks
 
-## Required integration tests not yet verified
+- Homepage and 8-product catalog available.
+- `/api/health` returned 200 and `storage:available`.
+- `/api/search?q=HOCO%20H29` returned the relevant Ouedkniss listing, not a raw API URL.
+- `/discover.html` loaded.
+- Anonymous `/api/admin-orders` returned 401.
 
-- Vercel Preview build from this repository and root directory src.
-- Blob private write and subsequent admin read.
-- Admin 401 behavior with absent and wrong token.
-- Legal/illegal state transitions against persisted records.
-- Search provider success, no results, timeout, malformed payload, and source URL restrictions.
-- Customer-visible workflow in a mobile browser, including external-search cart and order submit.
-- Service worker install/update behavior on a real browser.
-- No secret leakage in browser responses, logs, repository history, or generated artifacts.
+## Required integration checks still OPEN
 
-## Definition of done for a feature
+- Complete valid request intake into private Blob, authenticated order listing, status update and subsequent read.
+- Incorrect-token 401 and correct-token success for administration.
+- Mobile browser regression of the final deduplication logic.
+- Service Worker install/update/cache invalidation on real device.
+- Search provider timeout, malformed payload, empty responses and rate-limit handling in hosted runtime.
+- Production cutover and any migration of legacy customer records.
 
-A feature reaches EXPERIMENTALLY_SUPPORTED only after the code is deployed to a controlled environment and the intended path and negative cases pass. It reaches production-ready only after compatibility, privacy/security effects, rollback, and post-deploy smoke checks are recorded. File presence is implementation evidence, not runtime success evidence.
+A feature is experimentally supported only for the exact paths and environment that passed. The code or the green build alone is not proof of full production readiness.

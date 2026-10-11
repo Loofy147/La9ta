@@ -1,56 +1,57 @@
 # Deployment runbook
 
-## Principle
+## Separation principle
 
-The old project and domain remain untouched until the new repository has a verified Preview deployment and the operator explicitly chooses a cutover. A green build alone is not acceptance.
+The historical project `dz-pick-store` remains operational baseline until a separate cutover decision. The new repository `Loofy147/La9ta` is connected to a separate Vercel project named `la9ta`; this does not reassign the old production domain.
 
-## Intended Vercel configuration
+## Current isolated project
 
-- Repository: Loofy147/La9ta
-- Root Directory: src
-- Runtime: Node.js 22 or later; the historical project used Node 24.x.
-- Static assets and Vercel Functions live together under src.
-- Do not configure the public production alias during initial Preview validation.
-- Never paste BLOB_READ_WRITE_TOKEN or ADMIN_TOKEN into Git commits, issues, or logs.
+- Repository: https://github.com/Loofy147/La9ta
+- Root Directory: `src`
+- Project ID: `prj_cFiJcOwiK8R62DWNiZfJWCNsM7At`
+- Runtime: Node.js 24.x on Vercel; domain tests were also run independently under Node.js 22.
+- Branch preview tested: `dpl_5VD6iPBa5YXAQaKMPYbcNuk7Reob` / https://la9ta-kztfdt4at-djangos-projects-996fd933.vercel.app/
+- The branch deployment has `target:null`; it is not the old production alias.
+- Private test Blob store: `la9ta-preview-orders`, `store_rAO0bQFXBAZFzJd9`, region `fra1`.
 
-## Required environment variables
+## Environment variables
 
-- BLOB_READ_WRITE_TOKEN — generated/linked by a Vercel Blob store with private access.
-- ADMIN_TOKEN — a high-entropy secret set in Vercel Environment Variables for Preview and Production as appropriate.
+- `BLOB_READ_WRITE_TOKEN`: linked from the private Blob store for this isolated project.
+- `ADMIN_TOKEN`: high-entropy secret stored as a Vercel environment variable.
 
-Do not reuse or expose a secret by copying its decrypted value between projects. Prefer linking/provisioning storage through Vercel's store controls. If a separate Blob store is used for Preview, treat its data as test data and keep it separate from production orders.
+Never paste the actual secret values into Git, issues, docs, logs, or a chat transcript. Do not copy a decrypted production token across projects. Use separately managed credentials and separate stores for Preview vs legacy production data.
 
 ## Preview acceptance checklist
 
-1. Record repository commit SHA and deployment ID.
-2. Check the deployment is READY and note whether its URL is a Preview or Production URL.
-3. GET / — returns HTML with expected title and Arabic RTL layout.
-4. GET /catalog.json — returns eight products with unique numeric IDs and historical/reference prices.
-5. GET /api/health — with storage configured, returns 200 and storage=available; with no storage config, returns a controlled 503.
-6. GET /api/search?q=HOCO%20H29 — returns normalized results or a controlled provider error; no raw stack traces.
-7. POST /api/order with valid test data — creates a private order; note generated order number.
-8. POST /api/order with unknown ID, zero quantity, invalid phone, or honeypot value — rejected.
-9. GET /api/admin-orders without/with wrong ADMIN_TOKEN — 401; with correct token — only intended order records.
-10. POST /api/admin-update attempts legal and illegal transitions — legal succeeds, illegal transition returns 409.
-11. Check that admin APIs and orders are not cached or available without authorization.
-12. Check browser console, phone layout, cart persistence, and update behavior for service worker.
-13. Confirm old production URL and its alias still resolve to the previously verified deployment.
+1. Record source commit SHA, tree SHA, Vercel deployment ID and target.
+2. GET `/` — expected Arabic RTL storefront and responsive layout.
+3. GET `/catalog.json` — eight entries, unique IDs and explicit reference-price state.
+4. GET `/api/health` — 200 when storage is configured; controlled 503 when required env is absent.
+5. GET `/api/search?q=HOCO%20H29` — relevant results, approved human-facing source link, no raw API URL; test provider error, no results and timeout.
+6. POST `/api/order` with synthetic test data only — record order number; verify the Blob path is private.
+7. Verify invalid ID, zero/decimal quantity, bad phone, empty items and honeypot are rejected.
+8. GET `/api/admin-orders` without/wrong token — 401; correct token returns only intended order records.
+9. POST `/api/admin-update` — legal transition succeeds, illegal transition returns 409; reread order and verify statusHistory.
+10. Test catalog/search duplicate listing in cart; no duplicate lines.
+11. Test PWA install/update/cache behavior in a browser; confirm APIs and administration are not cached.
+12. Record all output and any residual failures in `docs/evidence-register.json`.
 
-## Cutover
+## Cutover to the legacy public domain
 
-Only after the checklist passes:
-- Capture old domain-to-deployment mapping and old Blob store information.
-- Decide separately whether to migrate orders or retain the previous storage as an archive.
-- Review privacy and data retention requirements before copying customer records.
-- Set the target alias to the new deployment using a reversible step.
-- Immediately verify homepage, health, order acceptance, search, admin 401 behavior, and order retrieval.
-- If any critical test fails, reassign the alias to the recorded stable deployment and verify again.
-- Update evidence-register.json, change-register.csv, and deployment evidence with before/after IDs.
+Do not perform this automatically after a green CI or a READY build. First:
+- Capture the old alias-to-deployment mapping and existing store configuration.
+- Decide whether legacy orders are archived or migrated; validate retention/privacy and preserve the old copy before any transformation.
+- Complete all Preview acceptance items, including order write/read/update and the correct-token admin flow.
+- Review data contracts and migration/rollback plan.
+- Only after explicit cutover decision, move the alias with the previous deployment ID recorded as rollback target.
+- Immediately smoke-test homepage, catalog, health, order intake, search, anonymous admin denial and authenticated listing.
+- If a critical acceptance test fails, revert alias to the recorded old deployment and verify the old site again.
+- Update evidence, change log, deployment IDs and time of cutover.
 
 ## Rollback
 
-Rollback means assigning the public alias back to the known-good deployment; it does not mean deleting data or overwriting the only copy of an order. Do not delete the old Blob store until a separate backup, retention, and migration decision is approved.
+Rollback changes routing back to the previous known-good deployment. It does not require deleting data and must not overwrite the only copy of an order. Do not delete either Blob store without a separate backup and retention decision.
 
-## Current status
+## Current state
 
-No Git-to-Vercel project connection, Preview environment, environment-variable setup for the new project, Blob migration, or alias cutover is claimed by this document.
+The isolated project is connected and partly runtime-verified. Full order persistence lifecycle and positive admin flow remain open. The old `dz-pick-store.vercel.app` alias and old order records remain untouched; no production cutover has occurred.
