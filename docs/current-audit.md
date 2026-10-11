@@ -1,48 +1,90 @@
-# Current audit and cutover baseline
+# التدقيق الحالي وخط أساس الانتقال
 
-Audit date: 2026-10-11  
-Target currently in production: https://dz-pick-store.vercel.app/  
-New source repository: https://github.com/Loofy147/La9ta
+**تاريخ الفحص:** 11 أكتوبر 2026  
+**المستودع:** https://github.com/Loofy147/La9ta  
+**النطاق القديم الذي لم يتغير:** https://dz-pick-store.vercel.app/
 
-## What was verified live during this audit
+## 1. الخلاصة التنفيذية
 
-| Check | Result | Evidence status |
+المستودع أصبح مشروعًا منظمًا مرتبطًا بمشروع Vercel مستقل اسمه `la9ta`، وجذر التطبيق `src/`. نسخة المعاينة منشورة، وفحوص CI ناجحة، وفحوص الصحة والبحث تعمل. لم يتحول النطاق القديم إلى المشروع الجديد، ولم تُنقل بيانات الطلبات القديمة.
+
+| الاختبار | النتيجة | حالة الدليل |
 |---|---|---|
-| Homepage / | HTTP/page fetch succeeded; Arabic storefront describes a request-to-source-confirmation model | FACT |
-| /api/health | Returned ok=true, storage=available, countHint=1 on the old deployment | FACT for that response only |
-| /api/search?q=HOCO%20H29 | 404 on public alias | FACT |
-| /discover.html | 404 on public alias | FACT |
-| /admin.html | Page shell loaded and showed internal operations UI | FACT for page load only |
-| Admin auth and full order/update flow | Not tested end-to-end in this audit | UNKNOWN |
-| Latest listed Vercel deployment | dpl_9NmQgvXgQqbmvfDF7Cxu4M468zcu, state READY, target production | FACT about platform status |
-| Deployment previously observed on public alias | dpl_13XeojEZRzN6Yk8ZfMNFxgkGiX1Q | FACT at time of that lookup; re-check alias before changes |
-| File tree of stable deployment | Contains catalog/order/health/admin source paths; lacks search.js and discover.html | FACT from deployment file tree |
-| File tree of latest deployment | Contains search.js and discover.html | FACT from deployment file tree |
-| Recent runtime log query | No error/warning records returned for the last 30-minute filter | Limited FACT, not proof of zero defects |
-| Seven-day runtime logs | Vercel Hobby retention rejected the query | FACT about tool query failure, not about prior incidents |
+| الصفحة الرئيسية للمعاينة | تحميل ناجح | FACT |
+| `/catalog.json` | 8 منتجات مع أسعار وروابط مصدر مرجعية | FACT |
+| `/api/health` | `ok:true`, `storage:available` | FACT لهذا الفحص |
+| `/api/search?q=HOCO%20H29` | نتيجة ذات صلة، 900 دج مرصودة، ورابط Ouedkniss مباشر `d56373493` | EXPERIMENTALLY_SUPPORTED |
+| `/discover.html` | تحميل ناجح | FACT |
+| `/admin.html` | تحميل ناجح | FACT للواجهة فقط |
+| `/api/admin-orders` دون رمز | HTTP 401 | EXPERIMENTALLY_SUPPORTED |
+| GitHub Actions run #38 | كل خطوات التحقق مكتملة بنجاح | EXPERIMENTALLY_SUPPORTED |
+| اختبارات Node المستقلة | 27 نجاحًا، 0 فشل | EXPERIMENTALLY_SUPPORTED |
+| إنشاء طلب اختبار | HTTP 201، الحالة `needs_revalidation` | EXPERIMENTALLY_SUPPORTED |
+| معرّف غير معروف / كمية صفرية / honeypot ممتلئ | HTTP 422 لكل منها | EXPERIMENTALLY_SUPPORTED |
+| استرجاع الطلب المحفوظ بالرمز الصحيح وتحديثه | لم يُثبت بعد | UNKNOWN |
+| اختبار تفاعلي بعد إصلاح إزالة التكرار | لم يُعد بعد الإصلاح النهائي | UNKNOWN جزئي |
 
-## Important interpretation
+## 2. مشروع Vercel الجديد والمعاينة
 
-READY indicates a deployment completed, not that the public alias points to it. The current evidence explains why search was not available on the public alias after rollback: its stable file tree has neither search.js nor discover.html.
+- المشروع: `la9ta`
+- Project ID: `prj_cFiJcOwiK8R62DWNiZfJWCNsM7At`
+- GitHub: `Loofy147/La9ta`
+- Root Directory: `src`
+- المخزن المنفصل: `la9ta-preview-orders`, ID `store_rAO0bQFXBAZFzJd9`, region `fra1`
+- أحدث معاينة موثقة: `dpl_fj29mcFVbeKy2e6LLKTR6eZX1Wf6`، حالة READY، target null
+- URL: https://la9ta-kmp1ey9rp-djangos-projects-996fd933.vercel.app/
+- Commit المصدر: `a9dfe0385d72d45b94facc4b35c0673090033ec3`
 
-The previous Vercel file-content connector returned truncated/corrupted strings for some long source files. Those strings must not be treated as canonical source and must not be copied back into deployment. This repository therefore starts a clean, source-controlled reconstruction of the known product behavior rather than claiming a byte-for-byte source recovery.
+المشروع مستقل عن `dz-pick-store`. حالة `READY` للمعاينة لا تعني تغيير النطاق القديم.
 
-## Existing project identifiers
+## 3. التحقق الآلي
 
-- Vercel project: dz-pick-store
-- Project ID: prj_n2wvKCZwzoKrwc4LEIbHPXFkgX2G
-- Team ID: team_ixI6xM0ZnsxZlgukDx9StXSn
-- Private Blob store reported previously: dz-pick-orders, store_PZXLgAcY0utZBfXi
-- Previously linked private Blob token was attached to the old Vercel project; its secret value must not be copied into Git or printed in audit files.
+- GitHub Actions run #38: https://github.com/Loofy147/La9ta/actions/runs/38152744176
+- خطوات الصياغة والاختبارات والتحقق من JSON نجحت.
+- تشغيل Node.js 22: `npm run check && npm test`، exit code 0، 27/27.
+- Commit التطبيق الذي نُفذت عليه اختبارات المجال والبحث: `de4bf6df1e42d72e3f0e2d727efd3ccbcd69d8a1`. الـcommit الأحدث `a9dfe...` عدّل التوثيق وسجل الأدلة فقط، ونشرته معاينة مستقلة.
 
-These are historical platform identifiers. Before any production mutation, retrieve current project details, current alias assignment, environment-variable presence, and Blob linkage again.
+هذه الاختبارات ليست فحص اختراق ولا بديلًا عن اختبار المتصفح ودورة الطلب المحفوظ كاملة.
 
-## Original product facts carried into this source baseline
+## 4. اختبار طلب المعاينة
 
-The prior catalog had eight entries and the following reference prices: HOCO H29 900 DZD, PLOKAMA U20 1,200 DZD, HOCO K28 1,900 DZD, YESIDO C70 2,400 DZD, Goji G7 2,500 DZD, K007 650 DZD, SilverCrest Mixeur 7,200 DZD, and Anker Eufy G50 Hybrid 34,000 DZD. They are historical reference prices from third-party listings and require revalidation before customer confirmation.
+على معاينة المشروع المنفصل، استقبل `POST /api/order` طلبًا اصطناعيًا وأعاد:
 
-## New repository status
+- HTTP 201
+- رقم اختبار: `DZ-C3A8D87B`
+- `priceStatus: needs_revalidation`
+- المعرّف المجهول: 422
+- كمية صفرية: 422
+- حقل honeypot ممتلئ: 422
 
-This repository was empty on discovery. Its first commits establish a structured codebase and audit records. The old Vercel project has not yet been switched to GitHub source, its production domain has not been moved, and no new production deployment is claimed.
+السجل `DZ-C3A8D87B` موجود في **مخزن المعاينة المنفصل فقط**، ببيانات اختبارية (`QA Synthetic`، ولاية `TEST-QA` وهاتف صفري)، ولا يمثل بيانات عميل حقيقية. لم تتم إزالته في هذه الجولة؛ يجب اعتباره سجل QA معلّمًا، وعدم نقله إلى الإنتاج أو التعامل معه كطلب عميل.
 
-The correct cutover sequence is: inspect repository/CI → link a separate Preview project with root directory src → add storage and admin environment variables without exposing secrets → test health/order/admin/search in Preview → decide on migration/alias cutover separately.
+هذا يثبت استجابة مسار إنشاء الطلب، لكنه لا يثبت قراءة السجل من API الإدارة أو تحديث الحالة. لم يُكشف رمز الإدارة السري أو يُدرج في أوامر أو سجلات التحقق، ولذلك يظل المسار الإيجابي للإدارة مفتوحًا.
+
+## 5. البحث وروابط المصادر
+
+أعيدت نتيجة البحث عن `HOCO H29` برابط إعلان موجه للبشر:
+https://www.ouedkniss.com/supports-support-smartphone-telephone-auto-magnetique-pour-voiture-sur-sortie-air-hoco-h29-saoula-alger-algerie-d56373493
+
+لا يعرض النظام حقل `viewUrl` كرابط منتج إن كان يقود إلى API JSON. أضيف إثراء محدود من نقطة تفاصيل المنتج للعثور على رابط العرض الأصلي، وتصفية النتائج وفق كلمات الاستعلام. يبقى السعر والتوفر بيانات مصدرية مرصودة تحتاج تحققًا قبل التأكيد.
+
+## 6. الأثر الرجعي والحدود
+
+- تغير سعر الكتالوج لا يعيد تسعير طلب قديم؛ يجب استخدام لقطة العرض المحفوظة وقت الإرسال.
+- عروض البحث الخارجية لا تدخل في المجموع المرجعي للكتالوج الثابت.
+- أضيفت هوية موحدة لإعلان Ouedkniss لمنع تكرار السطر عند إضافة الإعلان من الكتالوج والبحث. اجتازت اختبارات الوحدة والعقود، لكن اختبار المتصفح بعد الإصلاح النهائي لا يزال مطلوبًا.
+- ثبت رفض القراءة الإدارية دون رمز بـ401. لم يُثبت الوصول برمز صحيح أو تحديث حالة طلب محفوظ.
+- ملفات PWA موجودة وسياسة cache محكومة بقائمة عامة مسموحة؛ التثبيت وتحديث cache على هاتف ما زالا مفتوحين.
+- لا يوجد دمج دفع إلكتروني أو شحن مثبت.
+- لم يُغيّر alias للنطاق القديم ولم يُنقل أي سجل قديم.
+
+## 7. شروط الإغلاق المتبقية
+
+1. اختبار قراءة طلب QA المحفوظ وتحديثه عبر لوحة الإدارة باستخدام الرمز الصحيح دون كشف الرمز في السجلات؛ ثم إزالة سجل QA من مخزن المعاينة إذا توفر مسار حذف موثوق.
+2. اختبار الرمز الخاطئ والصحيح، وتحديث صالح وغير صالح، وسجل الحالات.
+3. إعادة اختبار السلة في المتصفح بعد إزالة التكرار.
+4. اختبار Service Worker على جهاز فعلي.
+5. اختبار أخطاء مزود البحث ومهلة الاستجابة وحدود المعدل.
+6. قرار مستقل بشأن أي ترحيل أو تغيير نطاق إنتاجي.
+
+لا ترفع حالة claim بسبب تكرار ذكره؛ احتفظ بدليل وحدود وتاريخ إعادة تحقق.
