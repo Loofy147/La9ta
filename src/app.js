@@ -31,15 +31,26 @@
     renderCart(items);
   }
   function cartKey(item) {
-    return item && item.externalOffer ? "e:" + item.externalOffer.sourceUrl : "c:" + String(item.id);
+    if (item && item.externalOffer) {
+      const identity = window.La9taSourceUtils && window.La9taSourceUtils.sourceIdentity(item.externalOffer.sourceUrl);
+      return identity ? "source:" + identity : "external:" + String(item.externalOffer.sourceUrl || "");
+    }
+    const id = Number(item && item.id);
+    const product = catalog.find((entry) => Number(entry.id) === id);
+    const identity = product && window.La9taSourceUtils && window.La9taSourceUtils.sourceIdentity(product.sourceUrl);
+    return identity ? "source:" + identity : "catalog:" + String(id);
   }
   function addCatalog(id) {
     const cart = readCart();
-    const existing = cart.find((item) => cartKey(item) === "c:" + String(id));
+    const requested = { id: Number(id), quantity: 1 };
+    const key = cartKey(requested);
+    const existing = cart.find((item) => cartKey(item) === key);
     if (existing) existing.quantity = Math.min(20, Number(existing.quantity) + 1);
-    else cart.push({ id: Number(id), quantity: 1 });
+    else cart.push(requested);
     saveCart(cart);
-    message.textContent = "أُضيف المنتج إلى طلب التوفير.";
+    message.textContent = existing
+      ? "الإعلان موجود بالفعل في الطلب؛ زدت الكمية بدل تكراره."
+      : "أُضيف المنتج إلى طلب التوفير.";
     message.className = "form-message";
   }
   function renderProducts() {
