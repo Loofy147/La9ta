@@ -11,13 +11,22 @@ const TRANSITIONS = Object.freeze({
 });
 const catalogById = new Map(catalog.map((item) => [Number(item.id), item]));
 
+// Exact host allowlist: intentionally does not allow api.teno-store.com
+// as a user-facing listing URL.
+const SOURCE_HOSTS = new Set([
+  "teno-store.com",
+  "www.teno-store.com",
+  "ouedkniss.com",
+  "www.ouedkniss.com",
+  "ouedkniss.com.dz",
+  "www.ouedkniss.com.dz"
+]);
+
 function sourceUrlIsAllowed(value) {
   try {
     const u = new URL(String(value || ""));
     if (u.protocol !== "https:" || u.username || u.password) return false;
-    const h = u.hostname.toLowerCase();
-    return h === "teno-store.com" || h.endsWith(".teno-store.com") ||
-      h === "ouedkniss.com.dz" || h.endsWith(".ouedkniss.com.dz");
+    return SOURCE_HOSTS.has(u.hostname.toLowerCase().replace(/\.$/, ""));
   } catch {
     return false;
   }
@@ -63,7 +72,7 @@ function normalizeItems(input) {
     }
 
     const offer = raw.externalOffer;
-    if (!offer || typeof offer !== "object") {
+    if (!offer || typeof offer !== "object" || Array.isArray(offer)) {
       throw Object.assign(new Error("بيانات عرض خارجي غير صالحة"), { statusCode: 422 });
     }
     const title = String(offer.title || "").trim();
