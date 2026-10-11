@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#191816">
+  <link rel="stylesheet" href="/styles.css">
+  <title>لقطة DZ — إدارة الطلبات</title>
+</head>
+<body>
+  <main class="admin-page">
+    <a class="brand" href="/"><span class="brand-mark">ل</span><span>لقطة <b>DZ</b></span></a>
+    <h1>إدارة طلبات التوفير</h1>
+    <p class="admin-muted">واجهة داخلية. الحماية الفعلية تتم في الخادم عبر رمز الإدارة، وليس عبر إخفاء هذه الصفحة.</p>
+    <section class="admin-panel">
+      <form id="admin-login" class="admin-controls">
+        <input id="admin-token" type="password" autocomplete="current-password" placeholder="رمز الإدارة" required aria-label="رمز الإدارة">
+        <button type="submit">تحميل الطلبات</button>
+      </form>
+      <p id="admin-message" role="status" aria-live="polite" class="admin-muted"></p>
+    </section>
+    <div class="admin-grid">
+      <section class="admin-panel"><h2>الطلبات</h2><div id="admin-orders" class="admin-list"><p class="admin-muted">أدخل رمز الإدارة لتحميل الطلبات.</p></div></section>
+      <section class="admin-panel admin-detail" id="admin-detail"><p class="admin-muted">اختر طلبًا لعرض تفاصيله.</p></section>
+    </div>
+  </main>
+  <script src="/admin.js" defer></script>
+</body>
+</html>
