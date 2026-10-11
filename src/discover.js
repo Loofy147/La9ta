@@ -15,21 +15,35 @@
   function money(value) {
     return new Intl.NumberFormat("fr-DZ", { maximumFractionDigits: 0 }).format(value) + " دج";
   }
-  function addOffer(item) {
+  let catalogOffers = [];
+  const catalogReady = fetch("/catalog.json", { cache: "no-store" })
+    .then((response) => response.ok ? response.json() : [])
+    .then((data) => { catalogOffers = Array.isArray(data) ? data : []; })
+    .catch(() => { catalogOffers = []; });
+
+  function cartKey(entry) {
+    if (entry && entry.externalOffer) {
+      const identity = window.La9taSourceUtils && window.La9taSourceUtils.sourceIdentity(entry.externalOffer.sourceUrl);
+      return identity ? "source:" + identity : "external:" + String(entry.externalOffer.sourceUrl || "");
+    }
+    const product = catalogOffers.find((candidate) => Number(candidate.id) === Number(entry && entry.id));
+    const identity = product && window.La9taSourceUtils && window.La9taSourceUtils.sourceIdentity(product.sourceUrl);
+    return identity ? "source:" + identity : "catalog:" + String(entry && entry.id);
+  }
+
+  async function addOffer(item) {
     if (!item.sourceUrl || !["Teno Store", "Ouedkniss"].includes(item.sourceName)) {
       message.textContent = "لا يوجد رابط مصدر صالح لإضافة هذا العرض.";
       message.className = "form-message error";
       return;
     }
+    await catalogReady;
     let cart = [];
     try {
       const old = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
       cart = Array.isArray(old) ? old : [];
     } catch { cart = []; }
-    const key = String(item.sourceUrl);
-    const current = cart.find((entry) => entry.externalOffer && entry.externalOffer.sourceUrl === key);
-    if (current) current.quantity = Math.min(20, Number(current.quantity || 1) + 1);
-    else cart.push({
+    const offer = {
       externalOffer: {
         title: String(item.title || "").slice(0, 220),
         sourceName: item.sourceName,
@@ -37,9 +51,15 @@
         observedPriceDzd: item.priceDzd === null ? null : item.priceDzd
       },
       quantity: 1
-    });
+    };
+    const key = cartKey(offer);
+    const current = cart.find((entry) => cartKey(entry) === key);
+    if (current) current.quantity = Math.min(20, Number(current.quantity || 1) + 1);
+    else cart.push(offer);
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    message.textContent = "أُضيف العرض إلى طلب التوفير. انتقل لإكمال بياناتك.";
+    message.textContent = current
+      ? "الإعلان موجود بالفعل في الطلب؛ زدت الكمية بدل تكراره."
+      : "أُضيف العرض إلى طلب التوفير. انتقل لإكمال بياناتك.";
     message.className = "form-message";
     window.setTimeout(() => { window.location.href = "/#request"; }, 450);
   }
