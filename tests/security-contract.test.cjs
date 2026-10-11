@@ -38,7 +38,11 @@ test("search adapter bounds query and upstream duration", () => {
   const source = read("src/api/search.js");
   assert.match(source, /slice\(0, 80\)/);
   assert.match(source, /AbortSignal\.timeout\(7000\)/);
-  assert.match(source, /slice\(0, 12\)/);
+  assert.match(source, /normalizeSearchResults/);
+  const domain = read("src/lib/search-domain.js");
+  assert.match(domain, /slice\(0, 12\)/);
+  assert.match(domain, /safeSourceUrl\(attributeSource\)/);
+  assert.doesNotMatch(domain, /safeSourceUrl\(product\.viewUrl\)/);
 });
 
 test("environment secrets are not committed into source configuration", () => {
