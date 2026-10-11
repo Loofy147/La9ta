@@ -23,7 +23,10 @@
   function readCart() {
     try {
       const value = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-      return Array.isArray(value) ? value.filter((item) => item && Number.isInteger(Number(item.quantity)) && Number(item.quantity) >= 1 && Number(item.quantity) <= 20) : [];
+      const valid = Array.isArray(value)
+        ? value.filter((item) => item && Number.isInteger(Number(item.quantity)) && Number(item.quantity) >= 1 && Number(item.quantity) <= 20)
+        : [];
+      return dedupeCart(valid);
     } catch { return []; }
   }
   function saveCart(items) {
@@ -39,6 +42,21 @@
     const product = catalog.find((entry) => Number(entry.id) === id);
     const identity = product && window.La9taSourceUtils && window.La9taSourceUtils.sourceIdentity(product.sourceUrl);
     return identity ? "source:" + identity : "catalog:" + String(id);
+  }
+  function dedupeCart(items) {
+    const merged = [];
+    const byKey = new Map();
+    for (const item of items) {
+      const key = cartKey(item);
+      const existing = byKey.get(key);
+      if (existing) {
+        existing.quantity = Math.min(20, Number(existing.quantity) + Number(item.quantity));
+      } else {
+        byKey.set(key, item);
+        merged.push(item);
+      }
+    }
+    return merged;
   }
   function addCatalog(id) {
     const cart = readCart();
