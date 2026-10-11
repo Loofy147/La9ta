@@ -34,15 +34,17 @@ test("service worker excludes API, admin, and discovery routes from cache", () =
   assert.doesNotMatch(source, /caches\.open\(CACHE\).*put\(request/);
 });
 
-test("search adapter bounds query and upstream duration", () => {
+test("search adapter bounds query, upstream calls, and result size", () => {
   const source = read("src/api/search.js");
   assert.match(source, /slice\(0, 80\)/);
-  assert.match(source, /AbortSignal\.timeout\(7000\)/);
+  assert.match(source, /AbortSignal\.timeout\(5000\)/);
+  assert.match(source, /AbortSignal\.timeout\(4000\)/);
   assert.match(source, /normalizeSearchResults/);
+  assert.match(source, /fetchSourceDetails/);
   const domain = read("src/lib/search-domain.js");
   assert.match(domain, /slice\(0, 12\)/);
-  assert.match(domain, /safeSourceUrl\(attributeSource\)/);
-  assert.doesNotMatch(domain, /safeSourceUrl\(product\.viewUrl\)/);
+  assert.match(domain, /extractProductSourceUrl/);
+  assert.doesNotMatch(domain, /product\.viewUrl/);
 });
 
 test("environment secrets are not committed into source configuration", () => {
